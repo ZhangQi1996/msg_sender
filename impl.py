@@ -178,6 +178,7 @@ class MyMsgSender(MsgSenderBase):
     def init(self, *args, **kwargs):
         """
         kwargs可中配置
+        debug, 当是debug模式的时候程序出现异常不会触发ex_handler方法
         map_conf, map_conf_encoding
         recvrs_conf, recvrs_conf_encoding
         email_conf, email_conf_encoding
@@ -186,6 +187,8 @@ class MyMsgSender(MsgSenderBase):
         :param kwargs:
         :return:
         """
+        # 读取模式
+        self.DEBUG = kwargs.setdefault('debug', False)  # 默认不是debug模式
         # 读取配置文件
         self._read_map_conf_file(kwargs.setdefault('map_conf', 'map.conf'),
                                  kwargs.setdefault('map_conf_encoding', 'utf-8'))
@@ -228,6 +231,3 @@ class MyMsgSender(MsgSenderBase):
             if not check_phone_num(v):  # 不是手机号
                 self.MSG_RECEIVERS[k] = self._nickname2phone_num(v)     # 转为手机号
         return True
-
-    def send_after(self, *args, **kwargs):
-        time.sleep(1)

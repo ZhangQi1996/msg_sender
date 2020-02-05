@@ -11,6 +11,9 @@ class MsgSenderBase(ABC):
     # this is a dict or none, stored a map reflecting from phone num to nickname.
     PHONENUM_NICKNAME_MAP = None
 
+    # set debug mode, if true, it will not call the ex handling method
+    DEBUG = False
+
     def init(self, *args, **kwargs):
         """
         init relevant settings or confs.
@@ -38,7 +41,7 @@ class MsgSenderBase(ABC):
 
     def main(self):
         """
-        plz not modify or override this method ans just call it unless you make sure what you will do..
+        plz not modify or override this method and just call it unless you make sure what you will do..
         :return:
         """
         try:
@@ -56,7 +59,10 @@ class MsgSenderBase(ABC):
             self.high_available_handler()
             self.run()
         except Exception as e:
-            self.exception_handler(e)
+            if not self.DEBUG:  # if at debug mode, not execs the ex handling method
+                self.exception_handler(e)
+            else:
+                raise e
         finally:
             self.cleanup()
 
@@ -77,7 +83,7 @@ class MsgSenderBase(ABC):
 
     def get_msg_send_api_interface(self, *args, **kwargs):
         """
-        get a api interface like a url etc.
+        get an api interface like an url, an impl interface etc.
         maybe you should override this method.
         :return: api interface
         """
@@ -115,4 +121,5 @@ class MsgSenderBase(ABC):
         just overrides it.
         :return:
         """
+        pass
 
